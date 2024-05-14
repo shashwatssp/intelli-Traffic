@@ -12,7 +12,7 @@ class ImageContainer extends StatelessWidget {
       width: size.width,
       decoration: BoxDecoration(
         color: Colors.blue.shade400,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           bottomRight: Radius.circular(210.0),
           bottomLeft: Radius.circular(50),
         ),
@@ -27,7 +27,7 @@ class ImageContainer extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(
                   text,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.w600,
                       color: Colors.white),
@@ -36,12 +36,12 @@ class ImageContainer extends StatelessWidget {
             ),
           ),
           ClipRRect(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(210.0),
-              bottomLeft: Radius.circular(50),
+              bottomLeft: Radius.circular(40),
             ),
             child: SizedBox(
-              width: 190, // Adjust width as needed
+              width: 180, // Adjust width as needed
               height: 80,
               child: Image.asset(
                 img,

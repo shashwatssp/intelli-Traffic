@@ -1,26 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:intel_traffic/Backend/cloud_firebase_methods.dart'; // Import the necessary functions to fetch data
 
-class homeDrawer extends StatelessWidget {
-  const homeDrawer({super.key});
-  // void changeScreenToNotification(BuildContext context) {
-  //   Navigator.pushNamed(context, NotificationScreen.routeName);
-  // }
+class HomeDrawer extends StatefulWidget {
+  final String phoneOrAadharNumber;
 
-  // void changeScreenToLanguage(BuildContext context) {
-  //   Navigator.pushNamed(context, LanguageScreen.routeName);
-  // }
+  const HomeDrawer({
+    Key? key,
+    required this.phoneOrAadharNumber,
+  }) : super(key: key);
 
-  // void changeScreenToTransactionScreen(BuildContext context) {
-  //   Navigator.pushNamed(
-  //     context, TransactionScreen.routeName, // here giving error
-  //   );
-  // }
+  @override
+  _HomeDrawerState createState() => _HomeDrawerState();
+}
 
-  // void changeScreenToSettingsScreen(BuildContext context) {
-  //   Navigator.pushNamed(
-  //     context, SettingScreen.routeName, // here giving error
-  //   );
-  // }
+class _HomeDrawerState extends State<HomeDrawer> {
+  String userName = ''; // To store the user's name
+  int numberOfCases = 0; // To store the number of cases
+  int numberOfComplaints = 0; // To store the number of complaints
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  // Function to fetch user data asynchronously
+  Future<void> fetchUserData() async {
+    try {
+      // Fetch user name from the database
+      userName =
+          await CloudFirestoreClass().fetchUserName(widget.phoneOrAadharNumber);
+
+      // Fetch number of cases
+      numberOfCases = await CloudFirestoreClass()
+          .fetchNumberOfCases(widget.phoneOrAadharNumber);
+
+      // Fetch number of complaints
+      numberOfComplaints = await CloudFirestoreClass()
+          .fetchNumberOfComplaints(widget.phoneOrAadharNumber);
+
+      setState(() {}); // Update the UI
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,25 +68,35 @@ class homeDrawer extends StatelessWidget {
                     CircleAvatar(
                       radius: 40,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       width: 30,
                     ),
                     Column(
-                      mainAxisAlignment: MainAxisAlignment
-                          .center, // Align the Column vertically
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Sahil Soni',
+                          userName.isNotEmpty
+                              ? userName
+                              : 'Loading...', // Display the user's name
                           style: TextStyle(
-                              fontSize: 25,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600),
+                            fontSize: 25,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         Text(
-                          'id : 217XXXXXXX',
+                          'Phone/Aadhar: ${widget.phoneOrAadharNumber}', // Display the phone or Aadhar number
                           style: TextStyle(color: Colors.white),
-                        )
+                        ),
+                        Text(
+                          'Cases: $numberOfCases', // Display the number of cases
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          'Complaints: $numberOfComplaints', // Display the number of complaints
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ],
                     )
                   ],
@@ -81,6 +114,8 @@ class homeDrawer extends StatelessWidget {
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
+            // Add other list tiles here
+
             ListTile(
               onTap: () {
                 //changeScreenToNotification(context);
@@ -128,16 +163,16 @@ class homeDrawer extends StatelessWidget {
                 //changeScreenToLanguage(context);
               },
               contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-              leading: Icon(
+              leading: const Icon(
                 Icons.language_outlined,
                 size: 30,
               ),
-              title: Text(
+              title: const Text(
                 'Language',
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
-            ListTile(
+            const ListTile(
               contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
               leading: Icon(
                 Icons.chat_outlined,

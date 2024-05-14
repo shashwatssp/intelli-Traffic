@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "172562951861",
+    "project_id": "intelli-traffic",
+    "storage_bucket": "intelli-traffic.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172562951861:android:083581183e02287f18d8fc",
+        "android_client_info": {
+          "package_name": "com.example.intel_traffic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANJLdCwTLewjVW_8GxPWxx-X9wXTkaY-Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

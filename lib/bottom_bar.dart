@@ -1,23 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:intel_traffic/home/screens/homeScreen.dart';
 
-class bottomBar extends StatefulWidget {
-  const bottomBar({super.key});
+class BottomBar extends StatefulWidget {
+  final String phoneOrEmail; // Add phoneOrEmail parameter
+
+  const BottomBar({Key? key, required this.phoneOrEmail}) : super(key: key);
 
   @override
-  State<bottomBar> createState() => _bottomBarState();
+  State<BottomBar> createState() => _BottomBarState();
 }
 
-class _bottomBarState extends State<bottomBar> {
+class _BottomBarState extends State<BottomBar> {
   int _page = 0;
   double bottomBarWidth = 42;
   double bottomBarBorderWidth = 5;
 
-  List<Widget> pages = [
-    const HomeScreen(),
-    const HomeScreen(),
-    const HomeScreen(),
-  ];
+  late List<Widget> pages; // Declare pages list
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize pages list after widget is fully initialized
+    pages = [
+      HomeScreen(phoneOrAadhar: widget.phoneOrEmail),
+      HomeScreen(phoneOrAadhar: widget.phoneOrEmail),
+      HomeScreen(phoneOrAadhar: widget.phoneOrEmail),
+    ];
+  }
+
   void pageUpdate(int a) {
     setState(() {
       _page = a;

@@ -25,7 +25,7 @@ class TopCategories extends StatelessWidget {
                       doucment_verification_images[index],
                       fit: BoxFit.cover,
                       height: 60,
-                      width: 60,
+                      width: 50,
                     ),
                   ),
                 ),
@@ -33,7 +33,7 @@ class TopCategories extends StatelessWidget {
                   height: 5,
                 ),
                 Text(
-                  document_name[index],
+                  documentName[index],
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,

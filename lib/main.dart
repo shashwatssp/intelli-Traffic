@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:intel_traffic/firebase_options.dart';
 import 'package:intel_traffic/landing%20page/screens/log_in_screen.dart';
 import 'package:intel_traffic/landing%20page/screens/register_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
-  runApp(ProviderScope(child: MyApp()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends ConsumerWidget {
@@ -18,7 +29,7 @@ class MyApp extends ConsumerWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LogInScreen(),
+      home: LogInScreen(),
     );
   }
 }

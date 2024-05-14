@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:intel_traffic/Backend/cloud_firebase_methods.dart';
 import 'package:intel_traffic/common/active_cases.dart';
 import 'package:intel_traffic/home/screens/complaint_raise_screen.dart';
 import 'package:intel_traffic/home/screens/profileScreen.dart';
+import 'package:intel_traffic/home/screens/uploadFeedBackScreen.dart';
 import 'package:intel_traffic/home/widget/Category_grid_items.dart';
 import 'package:intel_traffic/utils.dart';
 
-class Categories extends StatelessWidget {
-  const Categories({super.key});
+class Categories extends StatefulWidget {
+  final String emailOrPhone; // Add emailOrPhone parameter
 
+  const Categories({Key? key, required this.emailOrPhone}) : super(key: key);
+
+  @override
+  _CategoriesState createState() => _CategoriesState();
+}
+
+class _CategoriesState extends State<Categories> {
   @override
   Widget build(BuildContext context) {
     void changeScreenToActiveCase() {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (ctx) => ActiveCaseScreen(),
+          builder: (ctx) => UserActiveCases(aadharOrPhone: widget.emailOrPhone),
         ),
       );
     }
@@ -21,31 +30,50 @@ class Categories extends StatelessWidget {
     void changeScreenToComplaint() {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (ctx) => ComplainPage(),
+          builder: (ctx) => CreateComplaintScreen(),
         ),
       );
     }
 
-    void changeScreenToProfile() {
+    void changeScreenToFeedback() {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (ctx) => ProfileScreen(),
+          builder: (ctx) => UploadFeedbackScreen(),
         ),
       );
+    }
+
+    void changeScreenToProfile(String emailOrPhone) async {
+      Map<String, dynamic>? userData =
+          await CloudFirestoreClass().getUserDetails(emailOrPhone);
+
+      print(userData);
+
+      if (userData != null) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (ctx) => ProfileScreen(userData: userData),
+          ),
+        );
+      } else {
+        // Handle case where user data is not found
+        print('User data not found for $emailOrPhone.');
+      }
     }
 
     final List<Function> list = [
-      changeScreenToProfile,
+      () => changeScreenToProfile(widget
+          .emailOrPhone), // Pass a closure that calls the function with emailOrPhone
       changeScreenToActiveCase,
       changeScreenToComplaint,
-      changeScreenToActiveCase,
+      changeScreenToFeedback,
       changeScreenToActiveCase,
     ];
 
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           crossAxisSpacing: 20,
           mainAxisSpacing: 20,

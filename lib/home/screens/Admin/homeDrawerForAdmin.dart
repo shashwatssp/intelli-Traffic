@@ -1,0 +1,137 @@
+import 'package:flutter/material.dart';
+
+class homeDrawerForAdmin extends StatelessWidget {
+  const homeDrawerForAdmin({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      backgroundColor: Colors.blue.shade400,
+      child: Center(
+        child: Column(
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(
+                      'https://wallup.net/wp-content/uploads/2018/09/28/684893-color-pattern.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                    ),
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // Align the Column vertically
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Admin',
+                          style: TextStyle(
+                              fontSize: 25,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          'id : 217XXXXXXX',
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+              leading: Icon(
+                Icons.person_2_outlined,
+                size: 30,
+              ),
+              title: Text(
+                'Account',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+            ListTile(
+              onTap: () {
+                //changeScreenToNotification(context);
+              },
+              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+              leading: Icon(
+                Icons.notifications_active_outlined,
+                size: 30,
+              ),
+              title: Text(
+                'Notification',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+            ListTile(
+              onTap: () {
+                // changeScreenToSettingsScreen(context);
+              },
+              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+              leading: Icon(
+                Icons.settings_outlined,
+                size: 30,
+              ),
+              title: Text(
+                'Settings',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+            ListTile(
+              onTap: () {
+                //changeScreenToTransactionScreen(context);
+              },
+              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+              leading: Icon(
+                Icons.wallet_outlined,
+                size: 30,
+              ),
+              title: Text(
+                'Payments',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+            ListTile(
+              onTap: () {
+                //changeScreenToLanguage(context);
+              },
+              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+              leading: Icon(
+                Icons.language_outlined,
+                size: 30,
+              ),
+              title: Text(
+                'Language',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+              leading: Icon(
+                Icons.chat_outlined,
+                size: 30,
+              ),
+              title: Text(
+                'Ask a Question',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

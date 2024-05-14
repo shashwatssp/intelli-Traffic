@@ -5,12 +5,12 @@ final List<String> doucment_verification_images = [
   "https://www.techtodaytrends.com/wp-content/uploads/2022/01/PUC-full-form.jpeg",
   "https://static.vecteezy.com/system/resources/thumbnails/006/952/915/small_2x/schoolarship-paper-reward-or-certificate-cartoon-illustration-free-vector.jpg",
 ];
-final List<String> document_name = [
+final List<String> documentName = [
   "Aadhar Card",
   "RC",
   "Pollution",
-  "Insurrance",
-  "Registration No."
+  "Insurance",
+  "Reg No."
 ];
 final List<String> gridName = [
   'Personal Info',
@@ -19,6 +19,15 @@ final List<String> gridName = [
   'Feedback',
   'History'
 ];
+
+final List<String> adminGridName = [
+  'Active Cases',
+  'Complaints Raised',
+  'Create New User',
+  'Create Case Screen',
+  'Feedback',
+];
+
 final List<String> gridImageLink = [
   'assets/images/profile.png',
   'assets/images/active_cases.png',
@@ -26,10 +35,13 @@ final List<String> gridImageLink = [
   'assets/images/negative-comment.png',
   'assets/images/history.png',
 ];
-// void changeScreenToActiveCases(BuildContext context){
-//        Navigator.of(context).push(
-//           MaterialPageRoute(
-//             builder: (ctx) => landingScreen,
-//           ),);
-//   }
+
+final List<String> adminGridImageLink = [
+  'assets/images/active_cases.png',
+  'assets/images/complain.png',
+  'assets/images/profile.png',
+  'assets/images/active_cases.png',
+  'assets/images/negative-comment.png',
+];
+
 final List<Function> functions = [];
