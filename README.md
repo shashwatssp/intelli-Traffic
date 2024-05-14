@@ -1,4 +1,4 @@
-# intel_traffic
+# intelli_traffic
 
 A new Flutter project.
 
