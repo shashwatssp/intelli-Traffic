@@ -2,9 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:intel_traffic/home/screens/Admin/adminCategories.dart';
 import 'package:intel_traffic/home/screens/Admin/homeDrawerForAdmin.dart';
-import 'package:intel_traffic/home/widget/document_verification.dart';
-import 'package:intel_traffic/home/widget/drawer.dart';
-import 'package:intel_traffic/home/widget/grid_items.dart';
+import 'package:intel_traffic/home/widget/admin_document_verification.dart';
 import 'package:intel_traffic/home/widget/image_content_home.dart';
 
 class AdminHomeScreen extends StatelessWidget {
@@ -48,7 +46,7 @@ class AdminHomeScreen extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-            const TopCategories(),
+            const AdminTopCategories(),
             const SizedBox(
               height: 20,
             ),
