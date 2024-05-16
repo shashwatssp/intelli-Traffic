@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // Import your CommunityFeedbackModel class
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intel_traffic/Backend/cloud_firebase_methods.dart';
-import 'package:intel_traffic/Backend/models/feedback_model.dart'; // Import the function to fetch feedback
+import 'package:langchain/langchain.dart';
+import 'package:langchain_openai/langchain_openai.dart';
 
 class AdminFeedbackScreen extends ConsumerStatefulWidget {
   const AdminFeedbackScreen({Key? key}) : super(key: key);
@@ -11,62 +12,78 @@ class AdminFeedbackScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminFeedbackScreenState extends ConsumerState<AdminFeedbackScreen> {
-  late Future<List<CommunityFeedbackModel>>
-      _feedbackFuture; // Declare future variable
+  late Future<String> _summaryFuture = Future.value('');
 
   @override
   void initState() {
     super.initState();
-    _feedbackFuture = CloudFirestoreClass()
-        .fetchAllFeedback(); // Call function to fetch feedback
+    _summaryFuture = _generateSummary();
+  }
+
+  Future<String> _generateSummary() async {
+    final feedback = await CloudFirestoreClass().fetchAllFeedback();
+    final langChainOpenAI = ChatOpenAI(
+      apiKey: "SECRET",
+      defaultOptions: const ChatOpenAIOptions(temperature: 0),
+    );
+
+    final List<ChatMessage> chatMessages =
+        feedback.map((fb) => ChatMessage.humanText(fb.feedback)).toList();
+
+    final prompt =
+        "Users are facing problems related to traffic challans or the mobile app. Please summarize the feedback below:\n\n";
+
+    //final result = await langChainOpenAI(chatMessages);
+
+    final result =
+        await langChainOpenAI([ChatMessage.humanText(prompt), ...chatMessages]);
+
+    // Extracting the summary text from the response
+    final summaryText = result.content.toString();
+
+    // Provide context to ChatGPT
+    final context =
+        "This is feedback from the public about the traffic system in general and the mobile app.";
+
+    return "$summaryText";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Admin Feedback'),
+        title: const Text('AI Powered Feedback'),
       ),
-      body: FutureBuilder<List<CommunityFeedbackModel>>(
-        future: _feedbackFuture,
+      body: FutureBuilder<String>(
+        future: _summaryFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            List<CommunityFeedbackModel>? feedback = snapshot.data;
-            if (feedback != null && feedback.isNotEmpty) {
-              return ListView.builder(
-                itemCount: feedback.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final currentFeedback = feedback[index];
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade400,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ListTile(
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Feedback: ${currentFeedback.feedback}',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+            final summary = snapshot.data;
+            if (summary != null && summary.isNotEmpty) {
+              return SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade400,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    summary,
+                    style: const TextStyle(
+                      color: Colors.white,
                     ),
-                  );
-                },
+                    maxLines: 100, // Limiting to 10 lines
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               );
             } else {
-              return const Center(child: Text('No feedback found.'));
+              return const Center(child: Text('No summary found.'));
             }
           }
         },
