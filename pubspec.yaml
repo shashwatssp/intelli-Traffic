@@ -42,6 +42,12 @@ dependencies:
   firebase_auth: ^4.17.8
   firebase_core: ^2.27.0
   firebase_storage: ^11.6.9
+  image_picker: ^1.0.8
+  image: ^4.1.7
+  langchain_chroma: ^0.1.1
+  langchain: ^0.4.2
+  langchain_openai: ^0.4.1
+  video_player: ^2.8.6
 
 dev_dependencies:
   flutter_test:
