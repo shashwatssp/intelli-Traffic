@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intel_traffic/Backend/models/case_model.dart';
 import 'package:intel_traffic/Backend/models/complaint_model.dart';
 import 'package:intel_traffic/Backend/models/feedback_model.dart';
@@ -62,7 +64,6 @@ class CloudFirestoreClass {
           await FirebaseFirestore.instance.collection('cases').get();
 
       return querySnapshot.docs.map((doc) {
-        // Assuming CaseModel has a constructor to create from document data
         return CaseModel(
           speeding: doc['speeding'],
           runningRedLight: doc['runningRedLight'],
@@ -75,7 +76,6 @@ class CloudFirestoreClass {
         );
       }).toList();
     } catch (e) {
-      // Handle error
       print('Error fetching cases: $e');
       return []; // Return empty list on error
     }
@@ -90,7 +90,6 @@ class CloudFirestoreClass {
           .get();
 
       return querySnapshot.docs.map((doc) {
-        // Assuming CaseModel has a constructor to create from document data
         return CaseModel(
           speeding: doc['speeding'],
           runningRedLight: doc['runningRedLight'],
@@ -103,7 +102,6 @@ class CloudFirestoreClass {
         );
       }).toList();
     } catch (e) {
-      // Handle error
       print('Error fetching cases: $e');
       return []; // Return empty list on error
     }
@@ -341,6 +339,181 @@ class CloudFirestoreClass {
     } catch (e) {
       print('Error uploading feedback: $e');
       return 'Failed to upload feedback. Please try again later.';
+    }
+  }
+
+  Future<String> uploadImageToDatabase({
+    required File imageFile,
+    required String phoneOrAadhar,
+    required String type,
+  }) async {
+    try {
+      String uid = getUid();
+
+      // Upload image file to Firebase Storage
+      Reference storageReference =
+          FirebaseStorage.instance.ref().child('images/$uid');
+      UploadTask uploadTask = storageReference.putFile(imageFile);
+      await uploadTask;
+
+      // Get download URL of the uploaded image
+      String imageURL = await storageReference.getDownloadURL();
+
+      // Save image details to the 'images' collection
+      await FirebaseFirestore.instance.collection("images").doc(uid).set({
+        'image_url': imageURL,
+        'phone_or_aadhar': phoneOrAadhar,
+        'type': type,
+      });
+
+      return imageURL;
+    } catch (e) {
+      print('Error uploading image: $e');
+      return '';
+    }
+  }
+
+  Future<String?> getPhoneOrAadharFromImageUrl(String imageUrl) async {
+    try {
+      // Query the 'images' collection based on the imageURL
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('images')
+          .where('image_url', isEqualTo: imageUrl)
+          .limit(1) // Limit the result to 1 document
+          .get();
+
+      // Check if any document is found
+      if (querySnapshot.docs.isNotEmpty) {
+        // Extract and return the 'phone_or_aadhar' value
+        return querySnapshot.docs.first.get('phone_or_aadhar') as String?;
+      } else {
+        // Return null if no document is found
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching phone_or_aadhar: $e');
+      return null; // Return null on error
+    }
+  }
+
+  Future<bool> isAadhaarCardVerified(String phoneOrAadhar) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('images')
+          .where('phone_or_aadhar', isEqualTo: phoneOrAadhar)
+          .where('type', isEqualTo: 'AADHAAR CARD VERIFIED')
+          .get();
+
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error checking AADHAAR CARD verification: $e');
+      return false;
+    }
+  }
+
+  Future<bool> isDocVerified(String phoneOrAadhar, String type) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('images')
+          .where('phone_or_aadhar', isEqualTo: phoneOrAadhar)
+          .where('type', isEqualTo: '$type VERIFIED')
+          .get();
+
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error checking $type verification: $e');
+      return false;
+    }
+  }
+
+  Future<bool> isAadhaarCardFound(String phoneOrAadhar) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('images')
+          .where('phone_or_aadhar', isEqualTo: phoneOrAadhar)
+          .get();
+
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error finding AADHAAR CARD: $e');
+      return false;
+    }
+  }
+
+  Future<bool> isDocFound(String phoneOrAadhar, String type) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('images')
+          .where('phone_or_aadhar', isEqualTo: phoneOrAadhar)
+          .where('type', isEqualTo: type)
+          .get();
+
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error finding $type : $e');
+      return false;
+    }
+  }
+
+  //.where('type', isEqualTo: '$type VERIFIED')
+
+  Future<String?> fetchImage(String phoneOrAadhar) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('images')
+          .where('phone_or_aadhar', isEqualTo: phoneOrAadhar)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first['image_url'];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching image: $e');
+      return "";
+    }
+  }
+
+  Future<void> markDocumentAsVerified(String imageUrl) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('images')
+          .where('image_url', isEqualTo: imageUrl)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+        String documentId = documentSnapshot.id;
+        String currentType = documentSnapshot['type'];
+
+        await FirebaseFirestore.instance
+            .collection('images')
+            .doc(documentId)
+            .update({'type': '$currentType VERIFIED'});
+      } else {
+        throw ('Document not found for image URL: $imageUrl');
+      }
+    } catch (e) {
+      throw ('Error marking document as verified: $e');
+    }
+  }
+
+  Future<List<String>> fetchImagesByType(String type) async {
+    try {
+      QuerySnapshot querySnapshot = await firebaseFirestore
+          .collection('images')
+          .where('type', isEqualTo: type)
+          .get();
+
+      List<String> imageUrls = querySnapshot.docs
+          .map((doc) => doc.get('image_url') as String)
+          .toList();
+
+      return imageUrls;
+    } catch (e) {
+      print('Error fetching images: $e');
+      return [];
     }
   }
 }
