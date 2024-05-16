@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intel_traffic/home/screens/Admin/chauraha_screen.dart';
+import 'package:intel_traffic/home/screens/live_footage.dart';
+import 'package:intel_traffic/landing%20pages/screens/log_in_admin.dart';
 
 class homeDrawerForAdmin extends StatelessWidget {
   const homeDrawerForAdmin({super.key});
@@ -14,7 +17,7 @@ class homeDrawerForAdmin extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                      'https://wallup.net/wp-content/uploads/2018/09/28/684893-color-pattern.jpg'),
+                      'https://images.pexels.com/photos/1031698/pexels-photo-1031698.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -25,6 +28,11 @@ class homeDrawerForAdmin extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 40,
+                      child: Icon(
+                        Icons.person,
+                        size: 40,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(
                       width: 30,
@@ -51,6 +59,30 @@ class homeDrawerForAdmin extends StatelessWidget {
                 ),
               ),
             ),
+
+            // PlayVideoPage
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (ctx) => ChaurahaListPage(),
+                  ),
+                );
+              },
+              child: const ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                leading: Icon(
+                  Icons.tv,
+                  size: 30,
+                ),
+                title: Text(
+                  'Live Footage',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
+            ),
+
             ListTile(
               contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
               leading: Icon(
@@ -118,7 +150,7 @@ class homeDrawerForAdmin extends StatelessWidget {
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
-            ListTile(
+            const ListTile(
               contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
               leading: Icon(
                 Icons.chat_outlined,
@@ -127,6 +159,27 @@ class homeDrawerForAdmin extends StatelessWidget {
               title: Text(
                 'Ask a Question',
                 style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (ctx) => AdminLogInScreen(),
+                  ),
+                );
+              },
+              child: const ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                leading: Icon(
+                  Icons.logout,
+                  size: 30,
+                ),
+                title: Text(
+                  'Log Out',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
               ),
             ),
           ],
