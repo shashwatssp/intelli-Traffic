@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intel_traffic/Backend/cloud_firebase_methods.dart'; // Import the necessary functions to fetch data
+import 'package:intel_traffic/Backend/cloud_firebase_methods.dart';
+import 'package:intel_traffic/landing%20pages/screens/log_in_screen.dart'; // Import the necessary functions to fetch data
 
 class HomeDrawer extends StatefulWidget {
   final String phoneOrAadharNumber;
@@ -53,10 +54,10 @@ class _HomeDrawerState extends State<HomeDrawer> {
         child: Column(
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                      'https://wallup.net/wp-content/uploads/2018/09/28/684893-color-pattern.jpg'),
+                      'https://images.pexels.com/photos/1031698/pexels-photo-1031698.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -65,8 +66,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 40,
+                      child: Icon(
+                        Icons.person,
+                        size: 40,
+                        color: Colors.white,
+                      ),
                     ),
                     SizedBox(
                       width: 30,
@@ -86,16 +92,25 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           ),
                         ),
                         Text(
-                          'Phone/Aadhar: ${widget.phoneOrAadharNumber}', // Display the phone or Aadhar number
-                          style: TextStyle(color: Colors.white),
+                          'AADHAAR: ${widget.phoneOrAadharNumber}', // Display the phone or Aadhar number
+                          style: TextStyle(
+                              color: Color.fromARGB(
+                                255,
+                                255,
+                                255,
+                                255,
+                              ),
+                              fontWeight: FontWeight.w900),
                         ),
                         Text(
                           'Cases: $numberOfCases', // Display the number of cases
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w900),
                         ),
                         Text(
                           'Complaints: $numberOfComplaints', // Display the number of complaints
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w900),
                         ),
                       ],
                     )
@@ -181,6 +196,28 @@ class _HomeDrawerState extends State<HomeDrawer> {
               title: Text(
                 'Ask a Question',
                 style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (ctx) => LogInScreen(),
+                  ),
+                );
+              },
+              child: const ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                leading: Icon(
+                  Icons.logout,
+                  size: 30,
+                ),
+                title: Text(
+                  'Log Out',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
               ),
             ),
           ],
