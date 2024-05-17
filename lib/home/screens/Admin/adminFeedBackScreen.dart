@@ -20,33 +20,44 @@ class _AdminFeedbackScreenState extends ConsumerState<AdminFeedbackScreen> {
     _summaryFuture = _generateSummary();
   }
 
-  Future<String> _generateSummary() async {
-    final feedback = await CloudFirestoreClass().fetchAllFeedback();
-    final langChainOpenAI = ChatOpenAI(
-      apiKey: "SECRET",
-      defaultOptions: const ChatOpenAIOptions(temperature: 0),
-    );
+ Future<String> _generateSummary() async {
+  final feedback = await CloudFirestoreClass().fetchAllFeedback();
+  final langChainOpenAI = ChatOpenAI(
+    apiKey: "SECRET",
+    defaultOptions: const ChatOpenAIOptions(temperature: 0),
+  );
 
-    final List<ChatMessage> chatMessages =
-        feedback.map((fb) => ChatMessage.humanText(fb.feedback)).toList();
+  final prompt =
+      "Users are facing problems related to traffic challans or the mobile app. Please summarize the feedback below:\n\n";
 
-    final prompt =
-        "Users are facing problems related to traffic challans or the mobile app. Please summarize the feedback below:\n\n";
+ 
+  final chunkSize = 2048;
 
-    //final result = await langChainOpenAI(chatMessages);
-
-    final result =
-        await langChainOpenAI([ChatMessage.humanText(prompt), ...chatMessages]);
-
-    // Extracting the summary text from the response
-    final summaryText = result.content.toString();
-
-    // Provide context to ChatGPT
-    final context =
-        "This is feedback from the public about the traffic system in general and the mobile app.";
-
-    return "$summaryText";
+  
+  final chunks = <String>[];
+  for (var i = 0; i < feedback.length; i += chunkSize) {
+    final chunk = feedback.sublist(i, i + chunkSize).join(' ');
+    chunks.add(chunk);
   }
+
+  
+  final summaries = <String>[];
+  for (var chunk in chunks) {
+    final result = await langChainOpenAI([ChatMessage.humanText(prompt), ChatMessage.humanText(chunk)]);
+    
+   
+    final summary = result.content.toString().split(' ').take(20).join(' ');
+    summaries.add(summary);
+  }
+
+ 
+  final combinedSummary = summaries.join('\n');
+
+  
+  
+
+  return "$combinedSummary";
+}
 
   @override
   Widget build(BuildContext context) {
