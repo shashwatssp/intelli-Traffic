@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intel_traffic/Backend/cloud_firebase_methods.dart';
 import 'package:intel_traffic/home/screens/Admin/adminHomeScreen.dart';
-import 'package:intel_traffic/landing%20page/widgets/form_box.dart';
+import 'package:intel_traffic/landing%20pages/widgets/form_box.dart';
 
 class CreateComplaintScreen extends StatelessWidget {
-  const CreateComplaintScreen({Key? key}) : super(key: key);
+  final String phoneOrAadhar;
+
+  const CreateComplaintScreen({Key? key, required this.phoneOrAadhar}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController aadharOrPhoneController = TextEditingController();
     TextEditingController subjectController = TextEditingController();
     TextEditingController complaintController = TextEditingController();
 
@@ -54,9 +55,12 @@ class CreateComplaintScreen extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
-                            FormBox2(
-                              labelFormText: 'Aadhar/Phone',
-                              controller: aadharOrPhoneController,
+                            Text(
+                              'Aadhar/Phone: $phoneOrAadhar',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             const SizedBox(height: 8),
                             FormBox2(
@@ -64,7 +68,7 @@ class CreateComplaintScreen extends StatelessWidget {
                               controller: subjectController,
                             ),
                             const SizedBox(height: 8),
-                            // Make the complaint box 5 times bigger
+                            
                             SizedBox(
                               height: 200, // Adjust the height as needed
                               child: FormBox3(
@@ -75,31 +79,25 @@ class CreateComplaintScreen extends StatelessWidget {
                             const SizedBox(height: 8),
                             GestureDetector(
                               onTap: () async {
-                                String aadharOrPhone =
-                                    aadharOrPhoneController.text;
                                 String subject = subjectController.text;
                                 String complaint = complaintController.text;
 
                                 String result = await CloudFirestoreClass()
                                     .uploadComplaintToDatabase(
-                                  aadharOrPhone: aadharOrPhone,
+                                  aadharOrPhone: phoneOrAadhar,
                                   subject: subject,
                                   complaint: complaint,
                                 );
                                 print(result);
 
                                 if (result == "success") {
-                                  // Complaint created successfully
-                                  // Perform any additional actions here
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => AdminHomeScreen(),
+                                      builder: (context) => HomeScreen(),
                                     ),
                                   );
                                 } else {
-                                  // Complaint creation failed
-                                  // Handle the error accordingly
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
                                     content: Text(result),
